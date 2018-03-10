@@ -1,7 +1,7 @@
 {
-  "name": "p2_quiz",
-  "version": "1.0.0",
-  "description": "Proyecto P2_Quiz",
+  "name": "P3_Quiz",
+  "version": "2.0.0",
+  "description": "Proyecto P3_Quiz",
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/CLopezAlo/P2_Quiz.git"
   },
   "keywords": [
-    "P2_Quiz",
+    "P3_Quiz",
     "core",
     "node"
   ],
@@ -24,6 +24,8 @@
   "homepage": "https://github.com/CLopezAlo/P2_Quiz#readme",
   "dependencies": {
     "chalk": "^2.3.2",
-    "figlet": "^1.2.0"
+    "figlet": "^1.2.0",
+    "sequelize": "^4.35.2",
+    "sqlite3": "^3.1.13"
   }
 }
