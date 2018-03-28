@@ -179,35 +179,40 @@ exports.testCmd = (socket, rl,id) => {
 };
 
 exports.playCmd = (socket, rl) => {
+
     let score = 0;
     let toBeResolved = [];
-    
+    //for (let i = 0; i < model.count(); i++){
+       // toBeResolved[i] = i;
+    //}
+
     const playOne = () => {
-        return new Promise((resolve,reject) => {
-            
-            if(toBeResolved.length <=0){
-                log(socket, "No hay nada mas que preguntar.\nFin del examen. Aciertos:");
+        return new Sequelize.Promise((resolve,reject) => {
+            if (toBeResolved.length <= 0) {
+                log(socket, `No hay nada más que preguntar.`);
+                log(socket, `${score}`, "magenta");
                 resolve();
-                return;
+             }else {
+
+                    let id = Math.floor(toBeResolved.length * Math.random());
+                    let quiz = toBeResolved[id];
+                    rl.question(colorize(`${quiz.question}: `, 'red'), answer => {
+                        if (answer.trim().toLowerCase() === quiz.answer.trim().toLowerCase()){
+                             score++;
+                             toBeResolved.splice(id, 1);
+                             log(socket, `CORRECTO - LLeva ${score} aciertos.`);
+                             resolve(playOne());
+                        }else {
+                             log(socket, `INCORRECTO.`);
+                             log(socket, `Fin del juego. Aciertos:`);
+                             log(socket, `${score}`, 'magenta');
+                             resolve();
+                        }
+                    });
             }
-            let pos = Math.floor(Math.random()*toBeResolved.length);
-            let quiz = toBeResolved[pos];
-            toBeResolved.splice(pos,1);
-            
-            makeQuestion(rl, quiz.question+'? ')
-            .then(answer => {
-                if(answer.toLowerCase().trim() === quiz.answer.toLowerCase().trim()){
-                    score++;
-                    log(socket, "CORRECTO - Lleva ",score, "aciertos");
-                    resolve(playOne());
-                } else {
-                    log(socket, "INCORRECTO.\nFin del examen. Aciertos:");
-                    resolve();
-                }   
-            })
-        })
-    }
-    
+        })  
+    };
+
     models.quiz.findAll({raw: true})
     .then(quizzes => {
         toBeResolved = quizzes;
@@ -219,10 +224,11 @@ exports.playCmd = (socket, rl) => {
         console.log(socket, error);
     })
     .then(() => {
-        biglog(socket, score,'magenta');
+        log(socket, score,'magenta');
         rl.prompt();
     })
-};
+};   
+
 exports.creditsCmd = (socket, rl) => {
     log(socket, "Autor de la práctica:");
     log(socket, "Cristina López ALonso", "green");
